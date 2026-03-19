@@ -2,15 +2,117 @@
 
 #### Description: 
 
- - This API will help to get the three product’s information which will be displayed in the main screen under the “Product” section. 
+My section will require the assistance of the following APIs.
+***(JSONs are described in the next section)***
+
+  1. Customer Payment POST-API: I'll require an API that catch the customer payment information. 
+  
+  The payment information sent is:
+  * Payment information:
+      - Card number.
+      - Expiry month.
+      - Expire year.
+      - CVC
+      - Card Holder name. 
+
+  * Transaction information:
+      - Product Id.
+      - Plan name.
+      - Amount.
+      - Currency (US/CAD)
+
+  * Card information:
+      - Eamil. 
+      - Zip code.
+ 
+ The payment information expected from the API:
+ * Success Transaction.
+      - Status.
+      - Transaction Id.
+      - Charge information:
+        - Amount.
+        - Currency.
+        - Payment method.
+        - Card brand.
+      - URL Receipt.
+      - Message.
+  
+  * Failed transaction.
+      - Status.
+      - Error type.
+      - Errod code.
+      - Message.
+      - Decline code.
+
+ 2. Product Information API: This API is required to get the full product information. This API already stays in "Stripe" site  and the information gotten  will be displayed in the main screen under the “Product” section. 
+
+ * Information to get from the Stripe API.
+    - Product Id.
+    - Product name.
+    - Description.
+    - Features.
+    - Price.
+
 
 #### HTTP Method and URL:  (e.g., POST /api/v1/auth/login)
-- GET /api/v1/products (I got this based on Stripe’ documentation: http://localhost:3000/api/products - https://docs.stripe.com/api/products/list) 
+- To retrive the products information directly from Stripe 
+GET /api/v1/products (I got this based on Stripe’ documentation: http://localhost:3000/api/products - https://docs.stripe.com/api/products/list) 
 
 #### Request JSON Format:  A sample of the data sent to the server.
 - N/A (This is a GET request, so nothing is sent). 
 
 #### Response JSON Format: A sample of the expected data returned by the server.
+* This an example of the information sent as part of the payment process
+```json
+{
+  "order_details": {
+    "product_id": "prod_P123456789",
+    "plan_name": "Premium Plan",
+    "amount": 399,
+    "currency": "usd"
+  },
+  "payment_method": {
+    "card_number": "4242424242424242", 
+    "expiry_month": 12,
+    "expiry_year": 2028,
+    "cvc": "123",
+    "cardholder_name": "Alex Johnson"
+  },
+  "customer_info": {
+    "email": "alex.j@example.com",
+    "zip_code": "M5V 2L7"
+  }
+}
+```
+
+* This is an example of the payment response (successful)
+```json
+{
+  "status": "success",
+  "transaction_id": "ch_3O5ncXLrO7VaOxlC1u2u...",
+  "charge_details": {
+    "amount_captured": 399,
+    "currency": "usd",
+    "payment_method_type": "card",
+    "card_brand": "visa"
+  },
+  "receipt_url": "https://pay.stripe.com/receipts/acct_123/ch_123/rcpt_123",
+  "message": "Payment processed successfully. Your Premium features are now active."
+}
+```
+
+* This is an example of the reponse in case an error.
+```json
+{
+  "status": "error",
+  "error_type": "card_error",
+  "error_code": "insufficient_funds",
+  "message": "Your card has insufficient funds to complete this purchase.",
+  "decline_code": "insufficient_funds"
+}
+```
+
+* This an example of the API to get the products information
 ```json
 [
   {
@@ -18,27 +120,21 @@
     "name": "Name",
     "description": "Description",
     "features": [],
-    "default_price": null,
-    "url": null
-    
+    "default_price": null
   },
   {
     "id": "prod_ID",
     "name": "Name",
     "description": "Description",
     "features": [],
-    "default_price": null,
-    "url": null
-    
+    "default_price": null
   },
   {
     "id": "prod_ID",
     "name": "Name",
     "description": "Description",
     "features": [],
-    "default_price": null,
-    "url": null
-    
+    "default_price": null
   }
 ]
 ```
