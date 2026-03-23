@@ -5,7 +5,7 @@
 My section will require the assistance of the following APIs.
 ***(JSONs are described in the next section)***
 
-  1. Customer Payment POST-API: I'll require an API that catch the customer payment information. 
+  1. Customer Payment POST-API: I'll require an API that receives the customer payment information. 
   
   The payment information sent is:
   * Payment information:
