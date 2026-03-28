@@ -3,6 +3,8 @@
 <head>
     <title>Easy password</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script async src="https://js.stripe.com/v3/buy-button.js"> </script>
+
 </head>
 
 <body class="bg-black text-white font-sans antialiased">
@@ -84,145 +86,32 @@
 
             <div class="max-w-6xl w-full">
                 <!-- Section Title -->
-                <div class="text-center mb-12">
+                <div class="text-center mb-12" id="personal_plan">
                     <h1 class="text-4xl font-bold text-white mb-4">Choose Your Plan</h1>
                     <p class="text-gray-400 text-lg">Keep it simple, keep it segure, keep it with our EasyPass plans.
                     </p>
                 </div>
 
                 <!-- Cards Container -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8" id="plan_container">
+
 
                     <!-- Individual Plan -->
-                    <div
-                        class="bg-white rounded-lg p-8 hover:shadow-2xl hover:shadow-red-500/20 transition duration-300">
-                        <h2 class="text-2xl font-bold text-black mb-2">Individual</h2>
-                        <p class="text-gray-600 mb-6">Perfect for personal use</p>
-
-                        <div class="mb-6">
-                            <span class="text-4xl font-bold text-black">$4.99</span>
-                            <span class="text-gray-600">/month</span>
-                        </div>
-
-                        <ul class="space-y-3 mb-8">
-                            <li class="flex items-start">
-                                <span class="text-red-600 mr-2">✓</span>
-                                <span class="text-gray-700">Unlimited passwords</span>
-                            </li>
-                            <li class="flex items-start">
-                                <span class="text-red-600 mr-2">✓</span>
-                                <span class="text-gray-700">1 device</span>
-                            </li>
-                            <li class="flex items-start">
-                                <span class="text-red-600 mr-2">✓</span>
-                                <span class="text-gray-700">Password generator</span>
-                            </li>
-                            <li class="flex items-start">
-                                <span class="text-red-600 mr-2">✓</span>
-                                <span class="text-gray-700">Secure vault</span>
-                            </li>
-                        </ul>
-
-                        <button
-                            class="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 transition duration-300">
-                            Get Started
-                        </button>
-                    </div>
-
+                        <div class="bg-white rounded-lg p-8 text-black plans" id="personal"></div>
+                        
                     <!-- Premium Plan (Featured) -->
-                    <div class="bg-red-600 rounded-lg p-8 transform md:scale-105 shadow-2xl relative">
-                        <!-- Popular Badge -->
-
-                        <h2 class="text-2xl font-bold text-white mb-2">Premium</h2>
-                        <p class="text-red-100 mb-6">Best for power users</p>
-
-                        <div class="mb-6">
-                            <span class="text-4xl font-bold text-white">$9.99</span>
-                            <span class="text-red-100">/month</span>
-                        </div>
-
-                        <ul class="space-y-3 mb-8">
-                            <li class="flex items-start">
-                                <span class="text-white mr-2">✓</span>
-                                <span class="text-white">Unlimited passwords</span>
-                            </li>
-                            <li class="flex items-start">
-                                <span class="text-white mr-2">✓</span>
-                                <span class="text-white">Unlimited devices</span>
-                            </li>
-                            <li class="flex items-start">
-                                <span class="text-white mr-2">✓</span>
-                                <span class="text-white">Password generator</span>
-                            </li>
-                            <li class="flex items-start">
-                                <span class="text-white mr-2">✓</span>
-                                <span class="text-white">Secure vault</span>
-                            </li>
-                            <li class="flex items-start">
-                                <span class="text-white mr-2">✓</span>
-                                <span class="text-white">Priority support</span>
-                            </li>
-                            <li class="flex items-start">
-                                <span class="text-white mr-2">✓</span>
-                                <span class="text-white">Dark web monitoring</span>
-                            </li>
-                        </ul>
-
-                        <button
-                            class="w-full bg-white text-red-600 py-3 rounded-lg hover:bg-gray-100 transition duration-300 font-bold">
-                            Get Started
-                        </button>
-                    </div>
+                    <div class="bg-red-600 rounded-lg p-8 text-white transform md:scale-105 shadow-2xl relative plans"
+                        id="premium"></div>
 
                     <!-- Familiar (Family) Plan -->
-                    <div
-                        class="bg-white rounded-lg p-8 hover:shadow-2xl hover:shadow-red-500/20 transition duration-300">
-                        <h2 class="text-2xl font-bold text-black mb-2">Family</h2>
-                        <p class="text-gray-600 mb-6">Share with loved ones</p>
-
-                        <div class="mb-6">
-                            <span class="text-4xl font-bold text-black">$14.99</span>
-                            <span class="text-gray-600">/month</span>
-                        </div>
-
-                        <ul class="space-y-3 mb-8">
-                            <li class="flex items-start">
-                                <span class="text-red-600 mr-2">✓</span>
-                                <span class="text-gray-700">Unlimited passwords</span>
-                            </li>
-                            <li class="flex items-start">
-                                <span class="text-red-600 mr-2">✓</span>
-                                <span class="text-gray-700">Up to 6 users</span>
-                            </li>
-                            <li class="flex items-start">
-                                <span class="text-red-600 mr-2">✓</span>
-                                <span class="text-gray-700">Unlimited devices</span>
-                            </li>
-                            <li class="flex items-start">
-                                <span class="text-red-600 mr-2">✓</span>
-                                <span class="text-gray-700">Password generator</span>
-                            </li>
-                            <li class="flex items-start">
-                                <span class="text-red-600 mr-2">✓</span>
-                                <span class="text-gray-700">Family vault sharing</span>
-                            </li>
-                            <li class="flex items-start">
-                                <span class="text-red-600 mr-2">✓</span>
-                                <span class="text-gray-700">Priority support</span>
-                            </li>
-                        </ul>
-
-                        <button
-                            class="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 transition duration-300">
-                            Get Started
-                        </button>
-                    </div>
+                    <div class="bg-white rounded-lg p-8 hover:shadow-2xl hover:shadow-red-500/20 transition duration-300 plans"
+                        id="family"></div>
 
                 </div>
             </div>
 
-        </section>
 
+        </section>
 
         <!--Testimonials-->
         <section class="py-16">
@@ -266,8 +155,11 @@
             </div>
         </section>
 
-
     </main>
+
+
+
+
 
     <footer class="bg-black pt-16 pb-8">
         <div class="container mx-auto px-6" id="footer_container">
@@ -298,12 +190,12 @@
 
                 <div>
                     <h3 class="text-white font-bold uppercase text-sm mb-6 border-l-2 border-red-600 pl-3">
-                        Tool & Help
+                        Privacy
                     </h3>
                     <ul class="space-y-4 text-zinc-400 text-sm">
-                        <li><a href="#" class="hover:text-red-500 transition-colors">OPT 1</a></li>
-                        <li><a href="#" class="hover:text-red-500 transition-colors">OPT 2</a></li>
-                        <li><a href="#" class="hover:text-red-500 transition-colors">OPT 3</a></li>
+                        <li><a href="#" class="hover:text-red-500 transition-colors">Community</a></li>
+                        <li><a href="#" class="hover:text-red-500 transition-colors">Student discount</a></li>
+                        <li><a href="#" class="hover:text-red-500 transition-colors">Special reports</a></li>
                     </ul>
                 </div>
 
@@ -330,7 +222,7 @@
 
         </div>
     </footer>
-
+    <script src="/js/scripts.js"></script>
 </body>
 
 </html>

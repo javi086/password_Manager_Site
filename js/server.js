@@ -13,7 +13,8 @@ app.get('/api/products', async (req, res) => {
         // Documentation: https://docs.stripe.com/api/products/list
         const products = await stripe.products.list({
             limit: 3, // We only want the top 3 (Free, Premium, Family)
-            active: true
+            active: true,
+            expand: ['data.default_price']
         });
 
         // 5. Send the products back to your frontend as JSON

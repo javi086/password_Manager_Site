@@ -1,0 +1,24 @@
+{
+  "name": "final_project",
+  "version": "1.0.0",
+  "description": "My section will require the assistance of the following APIs. ***(JSONs are described in the next section)***",
+  "homepage": "https://github.com/2026-Winter-ITC-5202-0NA/project-tasks-javi086#readme",
+  "bugs": {
+    "url": "https://github.com/2026-Winter-ITC-5202-0NA/project-tasks-javi086/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/2026-Winter-ITC-5202-0NA/project-tasks-javi086.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "stripe": "^21.0.1"
+  }
+}
