@@ -84,3 +84,39 @@ async function getProductInformation() {
     }
 }
 
+
+document.getElementById('refresh_btn').addEventListener('click', loadPayments);
+
+async function loadPayments() {
+    const tableBody = document.getElementById('payment_table_body');
+    tableBody.innerHTML = '<tr><td colspan="4" class="p-8 text-center">Loading...</td></tr>';
+
+    try {
+        const response = await fetch('/api/admin/payments');
+        const payments = await response.json();
+
+        if (payments.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="4" class="p-8 text-center">No payments found yet.</td></tr>';
+            return;
+        }
+
+        tableBody.innerHTML = ''; // Clear the loading message
+
+        payments.forEach(pay => {
+            const date = new Date(pay.created_at).toLocaleDateString();
+            
+            const row = `
+                <tr class="border-t border-zinc-800 hover:bg-zinc-800/30 transition">
+                    <td class="p-4 font-medium text-white">${pay.email}</td>
+                    <td class="p-4"><span class="bg-red-600/10 text-red-500 px-2 py-1 rounded text-xs">${pay.plan_name}</span></td>
+                    <td class="p-4">$${pay.amount}</td>
+                    <td class="p-4 text-right text-zinc-500">${date}</td>
+                </tr>
+            `;
+            tableBody.innerHTML += row;
+        });
+    } catch (error) {
+        console.error("Error loading table:", error);
+        tableBody.innerHTML = '<tr><td colspan="4" class="p-8 text-center text-red-500">Error loading data.</td></tr>';
+    }
+}

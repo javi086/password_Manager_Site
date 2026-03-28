@@ -35,7 +35,7 @@ pool.connect((err, client, release) => {
 });
 
 /******************************************************/
-// 3. WEBHOOK ROUTE (Must come BEFORE express.json() if you use it)
+// 3. WEBHOOK ROUTE (Must come BEFORE express.json())
 /******************************************************/
 app.post('/webhook', express.raw({type: 'application/json'}), async (request, response) => {
   const sig = request.headers['stripe-signature'];
@@ -103,8 +103,26 @@ async function savePayment(email, amount, transactionId, planName) {
     }
 }
 
+
 /******************************************************/
-// 6. START SERVER
+// END POINT TO THE DB
+/******************************************************/
+
+
+
+// Add this to your server.js
+app.get('/api/admin/payments', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM payments ORDER BY created_at DESC');
+        res.json(result.rows); // Send the array of payments back to the frontend
+    } catch (err) {
+        console.error('Error fetching payments:', err);
+        res.status(500).json({ error: 'Database error' });
+    }
+});
+
+/******************************************************/
+//  START SERVER
 /******************************************************/
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
