@@ -1,6 +1,7 @@
 // 1. I need to import dependencies
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const app = express();
 app.use(cors());
 
