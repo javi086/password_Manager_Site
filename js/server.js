@@ -52,7 +52,7 @@ app.post('/webhook', express.raw({type: 'application/json'}), async (request, re
     const session = event.data.object;
     console.log("💰 Payment received! Saving to DB...");
     
-    // Make sure you have the savePayment function defined in this file!
+    // SavePayment function must be defined in this file!
     await savePayment(
         session.customer_details.email,
         session.amount_total / 100,
