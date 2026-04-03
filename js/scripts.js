@@ -3,10 +3,14 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
+/******************************************************/
+//          GET PRODUCTS INFORMATION
+/******************************************************/
+
 async function getProductInformation() {
     try {
         //const response = await fetch('http://localhost:3000/api/products'); -- this was needed only when I was in local mode but no once I published it
-        const response = await fetch('/api/products');
+        const response = await fetch('/api/easypassword/products');
         const products = await response.json();
 
         if (!response.ok) {
@@ -84,6 +88,10 @@ async function getProductInformation() {
     }
 }
 
+/******************************************************/
+//          GET PAYMENTS
+/******************************************************/
+
 
 document.getElementById('refresh_btn').addEventListener('click', loadPayments);
 
@@ -92,7 +100,7 @@ async function loadPayments() {
     tableBody.innerHTML = '<tr><td colspan="4" class="p-8 text-center">Loading...</td></tr>';
 
     try {
-        const response = await fetch('/api/admin/payments');
+        const response = await fetch('/api/easypassword/payments');
         const payments = await response.json();
 
         if (payments.length === 0) {

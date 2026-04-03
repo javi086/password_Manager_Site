@@ -1,12 +1,11 @@
 /******************************************************/
-// 1. IMPORTS & INITIALIZATION (Must be at the top)
+// 1. IMPORTS & INITIALIZATION 
 /******************************************************/
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const { Pool } = require('pg');
-
-const app = express(); // We create "app" first so we can use it below!
+const app = express(); 
 
 // Initialize Stripe
 const stripe = require('stripe')('sk_test_51T98ZILrO7VaOxlChjqWluZvKvb47attVvplYBHL4G5F8XTATAfhpTVAouyHJEC6JYE1aZ5PCCs5PvDw6Ay699bl00hIQrvrzA');
@@ -20,6 +19,7 @@ const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 app.use(cors());
 
 // Initialize the Database Pool
+// This is the recommended way to connect to PostgreSQL on Render. It uses the DATABASE_URL environment variable and sets SSL with rejectUnauthorized: false.
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
@@ -27,7 +27,7 @@ const pool = new Pool({
   }
 });
 
-// Verify connection
+// Verify connection to Render
 pool.connect((err, client, release) => {
   if (err) return console.error('Error acquiring client', err.stack);
   console.log('Successfully connected to PostgreSQL on Render');
@@ -35,7 +35,7 @@ pool.connect((err, client, release) => {
 });
 
 /******************************************************/
-// 3. WEBHOOK ROUTE (Must come BEFORE express.json())
+// 3. WEBHOOK ROUTE (Must come BEFORE express.json()). The webhook allows me to handle events from Stripe
 /******************************************************/
 app.post('/webhook', express.raw({type: 'application/json'}), async (request, response) => {
   const sig = request.headers['stripe-signature'];
@@ -52,7 +52,7 @@ app.post('/webhook', express.raw({type: 'application/json'}), async (request, re
     const session = event.data.object;
     console.log("💰 Payment received! Saving to DB...");
     
-    // SavePayment function must be defined in this file!
+    // SavePayment is triggered when a payment is successfully executed.
     await savePayment(
         session.customer_details.email,
         session.amount_total / 100,
@@ -66,14 +66,21 @@ app.post('/webhook', express.raw({type: 'application/json'}), async (request, re
 /******************************************************/
 // 4. GENERAL ROUTES & STATIC FILES
 /******************************************************/
+
+// This must be first because, it tells Express to look for the static files from the parent directory (where index.html is).
 app.use(express.static(path.join(__dirname, '../'))); 
 
+// This gets the index.html file once the parent directory is set as the static folder (previous step)
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../index.html'));
 });
 
-app.get('/api/products', async (req, res) => {
-    try {
+// This router will help me to organize the API endpoints.
+const apiRouter = express.Router();
+
+// Endpoint to fetch products from Stripe (for the frontend to display)
+apiRouter.get('/products', async (req, res) => {
+  try {
         const products = await stripe.products.list({
             limit: 3,
             active: true,
@@ -84,6 +91,20 @@ app.get('/api/products', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+
+
+// Endpoint to the database
+apiRouter.get('/payments', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM payments ORDER BY created_at DESC');
+        res.json(result.rows); // Send the array of payments back to the frontend
+    } catch (err) {
+        console.error('Error fetching payments:', err);
+        res.status(500).json({ error: 'Database error' });
+    }
+});
+
+app.use('/api/easypassword', apiRouter); // Prefix all API routes with /api/easypassword
 
 /******************************************************/
 // 5. DATABASE FUNCTIONS
@@ -105,24 +126,7 @@ async function savePayment(email, amount, transactionId, planName) {
 
 
 /******************************************************/
-// END POINT TO THE DB
-/******************************************************/
-
-
-
-// Add this to your server.js
-app.get('/api/admin/payments', async (req, res) => {
-    try {
-        const result = await pool.query('SELECT * FROM payments ORDER BY created_at DESC');
-        res.json(result.rows); // Send the array of payments back to the frontend
-    } catch (err) {
-        console.error('Error fetching payments:', err);
-        res.status(500).json({ error: 'Database error' });
-    }
-});
-
-/******************************************************/
-//  START SERVER
+//  START SERVER (This must be at the END of the file, after all routes and functions once everything else has been defined)
 /******************************************************/
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
