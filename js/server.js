@@ -2,10 +2,13 @@
 // 1. IMPORTS & INITIALIZATION 
 /******************************************************/
 const express = require('express');
-const cors = require('cors');
+const cors = require('cors'); // I require it to avoid my error: "Access
 const path = require('path');
-const { Pool } = require('pg');
+const { Pool } = require('pg'); 
 const app = express(); 
+const Parser = require('rss-parser'); // This will be used to parse the RSS information into a JSON format that I can use in the frontend.
+const parser = new Parser();
+
 
 // Initialize Stripe
 const stripe = require('stripe')('sk_test_51T98ZILrO7VaOxlChjqWluZvKvb47attVvplYBHL4G5F8XTATAfhpTVAouyHJEC6JYE1aZ5PCCs5PvDw6Ay699bl00hIQrvrzA');
@@ -64,21 +67,16 @@ app.post('/webhook', express.raw({type: 'application/json'}), async (request, re
 });
 
 /******************************************************/
-// 4. GENERAL ROUTES & STATIC FILES
+// 4. GENERAL ROUTES (Endpoints) & STATIC FILES
 /******************************************************/
 
-// This must be first because, it tells Express to look for the static files from the parent directory (where index.html is).
-app.use(express.static(path.join(__dirname, '../'))); 
-
-// This gets the index.html file once the parent directory is set as the static folder (previous step)
-app.get('/', (req, res) => {
+app.use(express.static(path.join(__dirname, '../')));  // This must be first because, it tells Express to look for the static files from the parent directory (where index.html is).
+app.get('/', (req, res) => { // This gets the index.html file once the parent directory is set as the static folder (previous step)
     res.sendFile(path.join(__dirname, '../index.html'));
 });
+const apiRouter = express.Router(); // This router will help me to organize the API endpoints.
 
-// This router will help me to organize the API endpoints.
-const apiRouter = express.Router();
-
-// Endpoint to fetch products from Stripe (for the frontend to display)
+// ENDPOINT  - Fetch products from Stripe (for the frontend to display)
 apiRouter.get('/products', async (req, res) => {
   try {
         const products = await stripe.products.list({
@@ -93,7 +91,7 @@ apiRouter.get('/products', async (req, res) => {
 });
 
 
-// Endpoint to the database
+// ENDPOINT - Fetch payments from the database (for the admin dashboard to display)
 apiRouter.get('/payments', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM payments ORDER BY created_at DESC');
@@ -103,6 +101,12 @@ apiRouter.get('/payments', async (req, res) => {
         res.status(500).json({ error: 'Database error' });
     }
 });
+
+// ENDPOINT - RSS Feed 
+apiRouter.get('/news', async (req, res) => {
+
+}
+
 
 app.use('/api/easypassword', apiRouter); // Prefix all API routes with /api/easypassword
 
