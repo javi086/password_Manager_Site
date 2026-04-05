@@ -1,12 +1,16 @@
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', () => {
     getProductInformation();
 });
 
 
+/******************************************************/
+//          GET PRODUCTS INFORMATION
+/******************************************************/
+
 async function getProductInformation() {
     try {
-        //const response = await fetch('http://localhost:3000/api/products'); -- this was needed only when I was in local mode but no once I published it
-        const response = await fetch('/api/products');
+        //const response = await fetch('http://localhost:3000/api/products'); -- This was needed only when I was in local mode 
+        const response = await fetch('/api/easypassword/products'); // This calls the endpoint we created in server.js to fetch products from Stripe, which then sends the data back to the frontend to be used here
         const products = await response.json();
 
         if (!response.ok) {
@@ -84,15 +88,23 @@ async function getProductInformation() {
     }
 }
 
+/******************************************************/
+//          GET PAYMENTS
+/******************************************************/
 
-document.getElementById('refresh_btn').addEventListener('click', loadPayments);
+
+//document.getElementById('refresh_btn').addEventListener('click', loadPayments);
+const refreshBtn = document.getElementById('refresh_btn');
+if (refreshBtn) {
+    refreshBtn.addEventListener('click', loadPayments);
+}
 
 async function loadPayments() {
     const tableBody = document.getElementById('payment_table_body');
     tableBody.innerHTML = '<tr><td colspan="4" class="p-8 text-center">Loading...</td></tr>';
 
     try {
-        const response = await fetch('/api/admin/payments');
+        const response = await fetch('/api/easypassword/payments');
         const payments = await response.json();
 
         if (payments.length === 0) {
