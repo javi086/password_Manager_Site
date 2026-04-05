@@ -8,7 +8,10 @@ const { Pool } = require('pg');
 const app = express();
 const Parser = require('rss-parser'); // This will be used to parse the RSS information into a JSON format that I can use in the frontend.
 const parser = new Parser({
-  headers: { 'User-Agent': 'EasyPass-Student-Project' },
+  headers: { 
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    'Accept': 'application/rss+xml, application/xml, text/xml;q=0.9, */*;q=0.8'
+  },
 });
 
 
@@ -107,8 +110,7 @@ apiRouter.get('/payments', async (req, res) => {
 // ENDPOINT - RSS Feed 
 apiRouter.get('/news', async (req, res) => {
   try {
-    const newsFeed = await parser.parseURL('https://www.cbc.ca/webfeed/rss/rss-technology');
-
+    const newsFeed = await parser.parseURL('https://www.wired.com/feed/category/security/latest/rss');
     // Safety check: Ensure we have items
     if (!newsFeed.items) {
       return res.json([]);
@@ -120,9 +122,10 @@ apiRouter.get('/news', async (req, res) => {
       date: item.pubDate
     }));
     res.json(topStories);
-  } catch (error) {
-    console.error('RSS Error:', error);
-    res.status(500).json({ error: 'Failed to fetch news' });
+ } catch (error) {
+    console.error('RSS Error:', error.message);
+    // Send 200 (Success) but with an empty list so the frontend handles it gracefully
+    res.status(200).json([]); 
   }
 
 });
